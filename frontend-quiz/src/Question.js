@@ -4,24 +4,32 @@ const Question = (props) => {
   const [selected, setSelected] = useState(null);
   const [options, setOptions] = useState(null);
 
+  const {
+    index,
+    totalNumberOfQuestions,
+    question,
+    nextQuestion,
+    correctAnswer,
+  } = props;
+
   useEffect(() => {
     setSelected(null);
-  }, [props.question]);
+  }, [question]);
 
   useEffect(() => {
     const randomIndex = Math.floor(
-      Math.random() * (props.question?.incorrectAnswers.length + 1)
+      Math.random() * (question?.incorrectAnswers.length + 1)
     );
-    const allAnswers = props.question?.incorrectAnswers;
-    allAnswers?.splice(randomIndex, 0, props.question?.correctAnswer);
+    const allAnswers = question?.incorrectAnswers;
+    allAnswers?.splice(randomIndex, 0, question?.correctAnswer);
     setOptions(allAnswers);
-  }, [props.question?.incorrectAnswers]);
+  }, [question?.incorrectAnswers]);
 
   const handleClick = () => {
-    if (selected === props.question?.correctAnswer) {
-      props.nextQuestion(true);
+    if (selected === question?.correctAnswer) {
+      nextQuestion(true);
     } else {
-      props.nextQuestion(false);
+      nextQuestion(false);
     }
   };
 
@@ -31,17 +39,19 @@ const Question = (props) => {
 
   return (
     <div className="question-container">
-      <div style={{ fontWeight: "bold" }}>{props.question?.question}</div>
+      <div style={{ fontWeight: "bold" }}>
+        {index + 1}/{totalNumberOfQuestions}: {question?.question}
+      </div>
       <br />
       <div className="question-answers">
-        {options?.map((answer, index) => (
+        {options?.map((answer, idx) => (
           <div
-            key={index}
+            key={idx}
             onClick={() => handleAnswerClick(answer)}
             className={`
               question
               ${answer === selected ? "selected-answer" : ""}
-              ${answer === props.correctAnswer ? "correct-answer" : ""}
+              ${answer === correctAnswer ? "correct-answer" : ""}
             `}
           >
             {answer}
