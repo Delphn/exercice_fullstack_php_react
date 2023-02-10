@@ -8,9 +8,9 @@ const App = () => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [score, setScore] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [correctAnswer, setCorrectAnswer] = useState(null);
 
-	useEffect(() => {
+  useEffect(() => {
     fetchQuestions();
   }, []);
 
@@ -27,21 +27,21 @@ const App = () => {
     setCurrentQuestion(null);
     setScore(0);
     setCurrentQuestionIndex(0);
-    setSelectedAnswer(null);
   };
 
   const nextQuestion = (isCorrect) => {
     if (isCorrect) {
       setScore(score + 1);
     }
+    setCorrectAnswer(currentQuestion.correctAnswer);
     setTimeout(() => {
+      setCorrectAnswer(null);
       setCurrentQuestion(questions[currentQuestionIndex + 1]);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer(null);
     }, 1000);
   };
 
-  if (currentQuestionIndex >= questions.length) {
+  if (questions.length > 0 && currentQuestionIndex >= questions.length) {
     return (
       <div className="App">
         <div className="App-header">
@@ -49,8 +49,9 @@ const App = () => {
         </div>
         <div className="App-content">
           <p>
-            Your final score is {score} out of {questions.length}
+            Your final score is {score} / {questions.length}
           </p>
+          <br />
           <button onClick={reset}>Retry Quiz</button>
         </div>
       </div>
@@ -65,10 +66,10 @@ const App = () => {
       <div className="App-content">
         <Question
           question={currentQuestion}
-          selectedAnswer={selectedAnswer}
-          setSelectedAnswer={setSelectedAnswer}
+          correctAnswer={correctAnswer}
           nextQuestion={nextQuestion}
         />
+        <br />
         <p>Score: {score}</p>
       </div>
     </div>

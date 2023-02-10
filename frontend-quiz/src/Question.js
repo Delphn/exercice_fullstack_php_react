@@ -31,16 +31,21 @@ const Question = (props) => {
 
   return (
     <div className="question-container">
-      <p>{props.question?.question}</p>
+      <div style={{ fontWeight: "bold" }}>{props.question?.question}</div>
+      <br />
       <div className="question-answers">
         {options?.map((answer, index) => (
-          <p
+          <div
             key={index}
             onClick={() => handleAnswerClick(answer)}
-            style={{ color: answer === selected ? "green" : "" }}
+            className={`
+              question
+              ${answer === selected ? "selected-answer" : ""}
+              ${answer === props.correctAnswer ? "correct-answer" : ""}
+            `}
           >
             {answer}
-          </p>
+          </div>
         ))}
       </div>
       <button onClick={handleClick}>Validate</button>
