@@ -99,9 +99,10 @@ body {
 	color: #000;
 }
 
-.question {
+.question-answer {
 	margin-bottom: 10px;
 	padding: 5px;
+	cursor: pointer;
 }
 
 .config-item {

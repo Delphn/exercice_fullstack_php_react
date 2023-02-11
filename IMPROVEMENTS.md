@@ -5,6 +5,8 @@
   - Implement comprehensive error handling and logging to diagnose issues and improve the stability of the application
 
 ### 2. Frontend
+  - Add TypeScript to the project to improve the type safety and make it easier to maintain
+  - Add more style to the project to make it look more appealing and user-friendly
   - Add a loading state with a spinner to indicate to the user that the API request is in progress
   - Add animations during the selection of an answer, highlighting of the correct answer, and transitions between questions
   - Add support for saving the quiz progress (local storage or session storage) so users can pick up where they left off in case they leave the page

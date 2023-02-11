@@ -49,7 +49,7 @@ const Question = (props) => {
             key={idx}
             onClick={() => handleAnswerClick(answer)}
             className={`
-              question
+              question-answer
               ${answer === selected ? "selected-answer" : ""}
               ${answer === correctAnswer ? "correct-answer" : ""}
             `}

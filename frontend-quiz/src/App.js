@@ -15,19 +15,21 @@ const App = () => {
   const [categories, setCategories] = useState([]);
   const [config, setConfig] = useState({
     limit: 5,
-    category: "",
+    categories: "",
     difficulty: "",
-    tags: "",
+    tag: "",
   });
 
   useEffect(() => {
     if (!showConfig) {
       fetchQuestions();
-    } else {
-      getTags().then((data) => setTags(data));
-      getCategories().then((data) => setCategories(data));
     }
   }, [showConfig]);
+
+  useEffect(() => {
+    getTags().then((tags) => setTags(tags));
+    getCategories().then((categories) => setCategories(categories));
+  }, []);
 
   const handleStartQuiz = () => {
     setConfig({ ...config, showConfig: false });
@@ -37,9 +39,9 @@ const App = () => {
   const handleResetConfig = () => {
     setConfig({
       limit: 5,
-      category: "",
+      categories: "",
       difficulty: "",
-      tags: "",
+      tag: "",
     });
   };
 
@@ -47,6 +49,10 @@ const App = () => {
     const queryString = Object.entries(config)
       .map(([key, value]) => {
         if (value) {
+          // remove spaces from the value (only for strings)
+          if (typeof value === "string") {
+            value = value.replace(/\s/g, "");
+          }
           return `${key}=${value}`;
         }
         return "";

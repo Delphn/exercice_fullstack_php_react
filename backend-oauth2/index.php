@@ -44,26 +44,20 @@ function getAccessToken($code)
   // Get the client secret from the environment variable
   $client_id = "a16837aaa8f536b229ce20fa8e90a2739885b640ff67de7b84562b6fe0e27513";
   $client_secret = getenv("WITHINGS_CLIENT_SECRET");
+  $url = "https://wbsapi.withings.net/v2/oauth2";
 
   // Build the request body and make the API call to retrieve the access token
-  $ch = curl_init();
-
-  curl_setopt($ch, CURLOPT_URL, "https://wbsapi.withings.net/v2/oauth2");
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+  $http_header = [];
+  $post_fields = [
     'action' => 'requesttoken',
     'grant_type' => 'authorization_code',
     'client_id' => $client_id,
     'client_secret' => $client_secret,
     'code' => $code,
     'redirect_uri' => 'http://localhost:7070'
-  ]));
+  ];
 
-  $response = curl_exec($ch);
-  curl_close($ch);
-
-  // Decode the response
-  $response = json_decode($response, true);
+  $response = makeApiCall($url, $http_header, $post_fields);
 
   // Return the access token
   return $response['body']['access_token'];
@@ -71,31 +65,36 @@ function getAccessToken($code)
 
 function getMeasurements($access_token)
 {
-  $ch = curl_init();
-
-  curl_setopt($ch, CURLOPT_URL, "https://wbsapi.withings.net/measure");
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, [
+  $url = "https://wbsapi.withings.net/measure";
+  $http_header = [
     'Authorization: Bearer ' . $access_token
-  ]);
-
-  curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+  ];
+  $post_fields = [
     'action' => 'getmeas',
-    'offset' => 10,
     'meastype' => 1
-  ]));
+  ];
 
-  $rsp = curl_exec($ch);
-  curl_close($ch);
+  $response = makeApiCall($url, $http_header, $post_fields);
 
-  $data = json_decode($rsp, true);
-
-  if (isset($data['body']['measuregrps'])) {
-    $measurements = $data['body']['measuregrps'];
+  if (isset($response['body']['measuregrps'])) {
+    $measurements = $response['body']['measuregrps'];
   } else {
     $measurements = [];
   }
 
   return $measurements;
+}
+
+
+function makeApiCall($url, $http_header, $post_fields)
+{
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $http_header);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_fields));
+  $response = curl_exec($ch);
+  curl_close($ch);
+  return json_decode($response, true);
 }
 ?>
