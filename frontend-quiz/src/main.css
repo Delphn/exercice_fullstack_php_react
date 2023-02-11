@@ -103,3 +103,15 @@ body {
 	margin-bottom: 10px;
 	padding: 5px;
 }
+
+.config-item {
+	margin-bottom: 10px;
+}
+
+.config-button {
+	margin: 0 5px;
+}
+
+.config-select {
+	margin-left: 5px;
+}
